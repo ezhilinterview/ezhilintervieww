@@ -14,6 +14,7 @@ import { useFormatters } from '../hooks/useFormatters';
 import { useAnalysisSummary, AnalysisParams } from '../hooks/useAnalysis';
 import CategoryIcon from '../components/CategoryIcon';
 import DateRangeModal from '../components/DateRangeModal';
+import { colorMap } from '../types/category';
 
 const tabs = ['Week', 'Month', 'Year', 'Custom'];
 
@@ -111,6 +112,79 @@ function Analysis() {
     setCustomParams(params);
   };
 
+  // Get color hex value from category color name
+  const getCategoryColorHex = (colorName: string): string => {
+    const colorMap: Record<string, string> = {
+      'indigo': '#6366F1',
+      'teal': '#14B8A6',
+      'yellow': '#F59E0B',
+      'orange': '#F97316',
+      'maroon': '#991B1B',
+      'pink': '#EC4899',
+      'lime': '#84CC16',
+      'violet': '#8B5CF6',
+      'rose': '#F43F5E',
+      'slate': '#64748B',
+      'sky': '#0EA5E9',
+      'purple': '#A855F7',
+      'stone': '#78716C',
+      'red': '#EF4444',
+      'green': '#22C55E',
+      'blue': '#3B82F6',
+      'amber': '#F59E0B',
+      'cyan': '#06B6D4',
+      'emerald': '#10B981',
+      'fuchsia': '#D946EF',
+      'gray': '#6B7280',
+      'zinc': '#71717A',
+      'brown': '#92400E',
+      'magenta': '#BE185D',
+      'bronze': '#A16207',
+      'peach': '#FED7AA',
+      'lavender': '#DDD6FE',
+      'mint': '#BBF7D0',
+      'olive': '#365314',
+      'navy': '#1E3A8A',
+      'gold': '#FBBF24',
+      'charcoal': '#374151',
+      'coral': '#FCA5A5',
+      'aqua': '#A7F3D0',
+      'plum': '#6B21A8',
+      'mustard': '#D97706',
+      'ruby': '#B91C1C',
+      'sapphire': '#1E3A8A',
+      'topaz': '#FDE047'
+    };
+    return colorMap[colorName] || '#6B7280';
+  };
+
+  // Get account type icon
+  const getAccountIcon = (type: number) => {
+    switch (type) {
+      case 1: // Bank
+        return '🏦';
+      case 2: // Wallet  
+        return '👛';
+      case 3: // Credit Card
+        return '💳';
+      case 4: // Cash
+        return '💵';
+      default:
+        return '🏦';
+    }
+  };
+
+  // Get account type name
+  const getAccountTypeName = (type: number) => {
+    switch (type) {
+      case 1: return 'Bank Account';
+      case 2: return 'Wallet';
+      case 3: return 'Credit Card';
+      case 4: return 'Cash';
+      default: return 'Account';
+    }
+  };
+
   // Format display text
   const getDisplayText = () => {
     switch (activeTab) {
@@ -141,21 +215,13 @@ function Analysis() {
   const spendingChartData = analysisData?.spendingCategory?.map(item => ({
     name: item.category.name,
     value: item.amount,
-    color: `#${item.category.color === 'indigo' ? '6366F1' : 
-                item.category.color === 'green' ? '10B981' : 
-                item.category.color === 'red' ? 'EF4444' : 
-                item.category.color === 'blue' ? '3B82F6' : 
-                item.category.color === 'yellow' ? 'F59E0B' : '6B7280'}`,
+    color: getCategoryColorHex(item.category.color),
   })) || [];
 
   const incomeChartData = analysisData?.incomeCategory?.map(item => ({
     name: item.category.name,
     value: item.amount,
-    color: `#${item.category.color === 'indigo' ? '6366F1' : 
-                item.category.color === 'green' ? '10B981' : 
-                item.category.color === 'red' ? 'EF4444' : 
-                item.category.color === 'blue' ? '3B82F6' : 
-                item.category.color === 'yellow' ? 'F59E0B' : '6B7280'}`,
+    color: getCategoryColorHex(item.category.color),
   })) || [];
 
   const balance = (analysisData?.income || 0) - (analysisData?.spending || 0);
@@ -324,7 +390,7 @@ function Analysis() {
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
                     >
                       {spendingChartData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
@@ -336,22 +402,32 @@ function Analysis() {
               </div>
               
               {/* Category List */}
-              <div className="max-h-60 overflow-y-auto space-y-3">
-                {analysisData?.spendingCategory?.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <CategoryIcon 
-                        icon={item.category.icon} 
-                        color={item.category.color} 
-                        size="sm" 
-                      />
-                      <span className="font-medium text-gray-900">{item.category.name}</span>
+              <div className="max-h-60 overflow-y-auto">
+                <div className="space-y-3">
+                  {analysisData?.spendingCategory?.map((item, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center space-x-3">
+                        <CategoryIcon 
+                          icon={item.category.icon} 
+                          color={item.category.color} 
+                          size="sm" 
+                        />
+                        <div>
+                          <p className="font-medium text-gray-900">{item.category.name}</p>
+                          <p className="text-xs text-gray-500">Expense Category</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-red-600">
+                          {formatCurrency(item.amount)}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {((item.amount / (analysisData?.spending || 1)) * 100).toFixed(1)}%
+                        </p>
+                      </div>
                     </div>
-                    <span className="font-semibold text-red-600">
-                      {formatCurrency(item.amount)}
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -380,7 +456,7 @@ function Analysis() {
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
                     >
                       {incomeChartData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
@@ -392,22 +468,32 @@ function Analysis() {
               </div>
               
               {/* Category List */}
-              <div className="space-y-3">
-                {analysisData?.incomeCategory?.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <CategoryIcon 
-                        icon={item.category.icon} 
-                        color={item.category.color} 
-                        size="sm" 
-                      />
-                      <span className="font-medium text-gray-900">{item.category.name}</span>
+              <div className="max-h-60 overflow-y-auto">
+                <div className="space-y-3">
+                  {analysisData?.incomeCategory?.map((item, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center space-x-3">
+                        <CategoryIcon 
+                          icon={item.category.icon} 
+                          color={item.category.color} 
+                          size="sm" 
+                        />
+                        <div>
+                          <p className="font-medium text-gray-900">{item.category.name}</p>
+                          <p className="text-xs text-gray-500">Income Category</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-green-600">
+                          {formatCurrency(item.amount)}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {((item.amount / (analysisData?.income || 1)) * 100).toFixed(1)}%
+                        </p>
+                      </div>
                     </div>
-                    <span className="font-semibold text-green-600">
-                      {formatCurrency(item.amount)}
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -430,16 +516,29 @@ function Analysis() {
                 <TrendingDown className="w-4 h-4 mr-2 text-red-600" />
                 Spending Accounts
               </h4>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {analysisData?.spendingAccount?.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-red-50 rounded">
-                    <span className="text-sm text-gray-900">{item.accountResponseDto.name}</span>
-                    <span className="text-sm font-medium text-red-600">
-                      {formatCurrency(item.amount)}
-                    </span>
+                  <div key={index} className="flex items-center justify-between p-3 border border-red-200 rounded-lg bg-red-50 hover:bg-red-100 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-lg">{getAccountIcon(item.accountResponseDto.type)}</span>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{item.accountResponseDto.name}</p>
+                        <p className="text-xs text-gray-600">{getAccountTypeName(item.accountResponseDto.type)}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-red-600">
+                        {formatCurrency(item.amount)}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {((item.amount / (analysisData?.spending || 1)) * 100).toFixed(1)}%
+                      </p>
+                    </div>
                   </div>
                 )) || (
-                  <p className="text-sm text-gray-500">No spending accounts</p>
+                  <div className="text-center py-4">
+                    <p className="text-sm text-gray-500">No spending accounts</p>
+                  </div>
                 )}
               </div>
             </div>
@@ -450,16 +549,29 @@ function Analysis() {
                 <TrendingUp className="w-4 h-4 mr-2 text-green-600" />
                 Income Accounts
               </h4>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {analysisData?.incomeAccount?.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-green-50 rounded">
-                    <span className="text-sm text-gray-900">{item.accountResponseDto.name}</span>
-                    <span className="text-sm font-medium text-green-600">
-                      {formatCurrency(item.amount)}
-                    </span>
+                  <div key={index} className="flex items-center justify-between p-3 border border-green-200 rounded-lg bg-green-50 hover:bg-green-100 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-lg">{getAccountIcon(item.accountResponseDto.type)}</span>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{item.accountResponseDto.name}</p>
+                        <p className="text-xs text-gray-600">{getAccountTypeName(item.accountResponseDto.type)}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-green-600">
+                        {formatCurrency(item.amount)}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {((item.amount / (analysisData?.income || 1)) * 100).toFixed(1)}%
+                      </p>
+                    </div>
                   </div>
                 )) || (
-                  <p className="text-sm text-gray-500">No income accounts</p>
+                  <div className="text-center py-4">
+                    <p className="text-sm text-gray-500">No income accounts</p>
+                  </div>
                 )}
               </div>
             </div>
@@ -470,16 +582,27 @@ function Analysis() {
                 <ArrowUpDown className="w-4 h-4 mr-2 text-blue-600" />
                 Transfer Accounts
               </h4>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {analysisData?.transfersAccount?.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-2 bg-blue-50 rounded">
-                    <span className="text-sm text-gray-900">{item.accountResponseDto.name}</span>
-                    <span className="text-sm font-medium text-blue-600">
-                      {formatCurrency(item.amount)}
-                    </span>
+                  <div key={index} className="flex items-center justify-between p-3 border border-blue-200 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      <span className="text-lg">{getAccountIcon(item.accountResponseDto.type)}</span>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{item.accountResponseDto.name}</p>
+                        <p className="text-xs text-gray-600">{getAccountTypeName(item.accountResponseDto.type)}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-semibold text-blue-600">
+                        {formatCurrency(item.amount)}
+                      </p>
+                      <p className="text-xs text-gray-500">Transfer</p>
+                    </div>
                   </div>
                 )) || (
-                  <p className="text-sm text-gray-500">No transfer accounts</p>
+                  <div className="text-center py-4">
+                    <p className="text-sm text-gray-500">No transfer accounts</p>
+                  </div>
                 )}
               </div>
             </div>
