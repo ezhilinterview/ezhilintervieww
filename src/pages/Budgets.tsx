@@ -1,17 +1,31 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Edit, Target, ChevronRight } from 'lucide-react';
-import { useBudgetSummary } from '../hooks/useBudgets';
+import { useBudgetSummary, useDeleteBudget } from '../hooks/useBudgets';
 import { Budget } from '../types/budget';
 import { MONTHS } from '../types/budget';
 import { useFormatters } from '../hooks/useFormatters';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 const tabs = ['Monthly', 'Yearly'];
 
 function Budgets() {
   const [activeTab, setActiveTab] = useState(0);
+  const [budgetToDelete, setBudgetToDelete] = useState<{ id: string; name: string } | null>(null);
   const { data: summary, isLoading } = useBudgetSummary();
+  const deleteBudget = useDeleteBudget();
   const { formatCurrency } = useFormatters();
+
+  const handleDeleteBudget = async () => {
+    if (budgetToDelete) {
+      try {
+        await deleteBudget.mutateAsync(budgetToDelete.id);
+        setBudgetToDelete(null);
+      } catch (error) {
+        console.error('Failed to delete budget:', error);
+      }
+    }
+  };
 
   const getProgressPercentage = (spent: number, budget: number) => {
     return budget > 0 ? Math.min((spent / budget) * 100, 100) : 0;
@@ -110,6 +124,18 @@ function Budgets() {
                   <Edit className="w-4 h-4 mr-1" />
                   Edit
                 </Link>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setBudgetToDelete({ 
+                      id: budget.id, 
+                      name: `${activeTab === 0 ? MONTHS[budget.month! - 1] : ''} ${budget.year}` 
+                    });
+                  }}
+                  className="ml-2 text-red-600 hover:text-red-700 text-sm"
+                >
+                  Delete
+                </button>
               </div>
             )}
             <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -287,6 +313,18 @@ function Budgets() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={!!budgetToDelete}
+        onClose={() => setBudgetToDelete(null)}
+        onConfirm={handleDeleteBudget}
+        title="Delete Budget"
+        message={`Are you sure you want to delete the budget for "${budgetToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete Budget"
+        confirmButtonClass="bg-red-600 hover:bg-red-700"
+        isPending={deleteBudget.isPending}
+      />
     </div>
   );
 }
