@@ -2,9 +2,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Suspense, lazy } from 'react';
 import { ToastProvider } from './contexts/ToastContext';
+import { PasswordResetProvider } from './contexts/PasswordResetContext';
 import ToastContainer from './components/Toast/ToastContainer';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
+import ProtectedPasswordResetRoute from './components/ProtectedPasswordResetRoute';
 import PrivateLayout from './components/Layout/PrivateLayout';
 import LoadingSpinner from './components/LoadingSpinner';
 
@@ -13,6 +15,8 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
 const SignIn = lazy(() => import('./pages/SignIn'));
 const SignUp = lazy(() => import('./pages/SignUp'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const VerifyOtp = lazy(() => import('./pages/VerifyOtp'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Analysis = lazy(() => import('./pages/Analysis'));
 const About = lazy(() => import('./pages/About'));
@@ -47,38 +51,51 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ToastProvider>
-        <Suspense fallback={<LoadingSpinner />}>
-          <Router>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={
-                <PublicRoute>
-                  <LandingPage />
-                </PublicRoute>
-              } />
-              <Route path="/signin" element={
-                <PublicRoute>
-                  <SignIn />
-                </PublicRoute>
-              } />
-              <Route path="/signup" element={
-                <PublicRoute>
-                  <SignUp />
-                </PublicRoute>
-              } />
-              <Route path="/forgotpassword" element={
-                <PublicRoute>
-                  <ForgotPassword />
-                </PublicRoute>
-              } />
+      <PasswordResetProvider>
+        <ToastProvider>
+          <Suspense fallback={<LoadingSpinner />}>
+            <Router>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={
+                  <PublicRoute>
+                    <LandingPage />
+                  </PublicRoute>
+                } />
+                <Route path="/signin" element={
+                  <PublicRoute>
+                    <SignIn />
+                  </PublicRoute>
+                } />
+                <Route path="/signup" element={
+                  <PublicRoute>
+                    <SignUp />
+                  </PublicRoute>
+                } />
+                <Route path="/forgotpassword" element={
+                  <PublicRoute>
+                    <ForgotPassword />
+                  </PublicRoute>
+                } />
+                <Route path="/verify-otp" element={
+                  <PublicRoute>
+                    <VerifyOtp />
+                  </PublicRoute>
+                } />
+                <Route path="/reset-password" element={
+                  <PublicRoute>
+                    <ProtectedPasswordResetRoute>
+                      <ResetPassword />
+                    </ProtectedPasswordResetRoute>
+                  </PublicRoute>
+                } />
 
-              {/* Protected Routes */}
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <PrivateLayout />
-                </ProtectedRoute>
-              }>
+                {/* Protected Routes */}
+                <Route path="/" element={
+                  <ProtectedRoute>
+                    <PrivateLayout />
+                  </ProtectedRoute>
+                }>
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="analysis" element={<Analysis />} />
                 <Route path="accounts" element={<Accounts />} />
@@ -119,15 +136,16 @@ function App() {
                 <Route path="about" element={
                   <About />
                 } />
-              </Route>
+                </Route>
 
-              {/* Redirect to dashboard for authenticated users */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Router>
-          <ToastContainer />
-        </Suspense>
-      </ToastProvider>
+                {/* Redirect to dashboard for authenticated users */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Router>
+            <ToastContainer />
+          </Suspense>
+        </ToastProvider>
+      </PasswordResetProvider>
     </QueryClientProvider>
   );
 }

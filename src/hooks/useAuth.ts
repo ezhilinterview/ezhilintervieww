@@ -107,13 +107,13 @@ export const useForgotPassword = () => {
       addToast({
         type: 'success',
         title: 'Reset link sent',
-        message: 'Check your email for password reset instructions.',
+        message: 'Check your email for the verification code.',
       });
     },
     onError: (error) => {
       addToast({
         type: 'error',
-        title: 'Failed to send reset link',
+        title: 'Failed to send verification code',
         message: error instanceof Error ? error.message : 'Please try again.',
       });
     },
