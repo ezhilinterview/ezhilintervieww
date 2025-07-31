@@ -105,6 +105,7 @@ const iconMap: Record<string, LucideIcon> = {
   'tools': Settings,
   'clock': Clock,
   'location': MapPin,
+  'others': MoreHorizontal
 };
 
 
