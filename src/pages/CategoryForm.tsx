@@ -150,7 +150,7 @@ function CategoryForm() {
                   key={tab}
                   type="button"
                   onClick={() => setActiveTab(index)}
-                  className={`flex-1 text-xs sm:text-sm font-medium rounded-lg py-2 transition-all duration-200 ${
+                  className={`flex-1 text-xs sm:text-sm font-medium rounded-lg py-2 transition-all duration-200 ${active
                       ? "bg-white shadow text-black"
                       : "text-gray-500 hover:text-black"
                     }`}
@@ -173,7 +173,7 @@ function CategoryForm() {
                 key={color}
                 type="button"
                 onClick={() => setSelectedColor(color)}
-                className={`relative w-8 h-8 sm:w-10 sm:h-10 p-1 rounded-full border-2 transition-all ${
+                className={`relative w-8 h-8 sm:w-10 sm:h-10 p-1 rounded-full border-2 transition-all ${selectedColor === color
                     ? `${colorMap[selectedColor]} scale-105 sm:scale-110`
                     : 'border-gray-300 hover:border-gray-400'
                   }`}
@@ -209,7 +209,7 @@ function CategoryForm() {
                       key={icon}
                       type="button"
                       onClick={() => setSelectedIcon(icon)}
-                      className={`p-0.5 sm:p-1 rounded-full mx-auto border-2 transition-all ${
+                      className={`p-0.5 sm:p-1 rounded-full mx-auto border-2 transition-all ${selectedIcon === icon
                           ? `${colorMap[selectedColor]} bg-indigo-50`
                           : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                         }`}

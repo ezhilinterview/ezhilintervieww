@@ -129,7 +129,7 @@ function DebtRecordForm() {
               <button
                 type="button"
                 onClick={() => setValue('type', '1')}
-                className={`flex-1 text-xs sm:text-sm font-medium rounded-lg py-2 transition-all duration-200 ${
+                className={`flex-1 text-xs sm:text-sm font-medium rounded-lg py-2 transition-all duration-200 ${register('type').value === '1' || recordType === '1'
                     ? "bg-white shadow text-black"
                     : "text-gray-500 hover:text-black"
                   }`}
@@ -139,7 +139,7 @@ function DebtRecordForm() {
               <button
                 type="button"
                 onClick={() => setValue('type', '2')}
-                className={`flex-1 text-xs sm:text-sm font-medium rounded-lg py-2 transition-all duration-200 ${
+                className={`flex-1 text-xs sm:text-sm font-medium rounded-lg py-2 transition-all duration-200 ${register('type').value === '2' || recordType === '2'
                     ? "bg-white shadow text-black"
                     : "text-gray-500 hover:text-black"
                   }`}
