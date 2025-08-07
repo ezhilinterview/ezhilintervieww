@@ -8,7 +8,6 @@ import { CreateDebtData } from '../types/debt';
 import AccountSelectModal from '../components/AccountSelectModal';
 import DatePicker from '../components/DatePicker';
 import TimePicker from '../components/TimePicker';
-
 interface FormData {
   personName: string;
   dueDate: string;
@@ -33,7 +32,6 @@ function DebtForm() {
   const debtType = location.state?.debtType as '1' | '2' | undefined;
 
   const { data: debt, isLoading: debtLoading } = useDebt(id || '');
-  const { data: accounts = [] } = useAccounts();
   const createDebt = useCreateDebt();
   const updateDebt = useUpdateDebt();
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<FormData>({
@@ -59,13 +57,6 @@ function DebtForm() {
   useEffect(() => {
     if (isEditing && debt) {
       setValue('personName', debt.personName);
-      setValue('dueDate', debt.dueDate);
-      setValue('additionalDetail', debt.additionalDetail);
-      setValue('type', debt.type);
-      setValue('recordType', debt.type);
-    }
-  }, [isEditing, debt, setValue]);
-
   const onSubmit = async (data: FormData) => {
     try {
       const debtData: CreateDebtData = {

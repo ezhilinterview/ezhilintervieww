@@ -4,7 +4,7 @@ import { ArrowLeft, Edit } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useCreateDebtRecord, useUpdateDebtRecord, useDebtRecord } from '../hooks/useDebts';
 import { useAccounts } from '../hooks/useAccounts';
-import { CreateDebtRecordData } from '../types/debt';
+import { useAccounts, useDefaultPaymentMode } from '../hooks/useAccounts';
 import AccountSelectModal from '../components/AccountSelectModal';
 import DatePicker from '../components/DatePicker';
 

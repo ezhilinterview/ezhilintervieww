@@ -47,6 +47,12 @@ export interface CreateDebtData {
   type: '1' | '2';
   record: {
     date: string;
+    time?: {
+      hour: number;
+      minute: number;
+      second: number;
+      nano: number;
+    };
     amount: number;
     description: string;
     accountId: string;
@@ -61,6 +67,12 @@ export interface UpdateDebtData {
   type?: '1' | '2';
   request?: {
     date: string;
+    time?: {
+      hour: number;
+      minute: number;
+      second: number;
+      nano: number;
+    };
     amount: number;
     description: string;
     accountId: string;
@@ -70,6 +82,12 @@ export interface UpdateDebtData {
 
 export interface CreateDebtRecordData {
   date: string;
+  time?: {
+    hour: number;
+    minute: number;
+    second: number;
+    nano: number;
+  };
   amount: number;
   description: string;
   accountId: string;
@@ -79,6 +97,12 @@ export interface CreateDebtRecordData {
 
 export interface UpdateDebtRecordData {
   date?: string;
+  time?: {
+    hour: number;
+    minute: number;
+    second: number;
+    nano: number;
+  };
   amount?: number;
   description?: string;
   accountId?: string;

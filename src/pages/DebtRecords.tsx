@@ -26,9 +26,9 @@ function DebtRecords() {
   const [recordToDelete, setRecordToDelete] = useState<{ id: string; description: string } | null>(null);
 
   const { data: debt } = useDebt(debtId || '');
-  const { data: allRecords, isLoading: allLoading } = useDebtRecords(debtId || '', currentPage, pageSize);
-  const { data: paidRecords, isLoading: paidLoading } = usePaidRecords(debtId || '', currentPage, pageSize);
-  const { data: receivedRecords, isLoading: receivedLoading } = useReceivedRecords(debtId || '', currentPage, pageSize);
+  const { data: allRecords, isLoading: allLoading } = useDebtRecords(debtId || '', currentPage, pageSize, activeTab === 0);
+  const { data: paidRecords, isLoading: paidLoading } = usePaidRecords(debtId || '', currentPage, pageSize, activeTab === 1);
+  const { data: receivedRecords, isLoading: receivedLoading } = useReceivedRecords(debtId || '', currentPage, pageSize, activeTab === 2);
   const { data: summary } = useDebtRecordSummary(debtId || '');
   const deleteRecord = useDeleteDebtRecord();
   const { formatCurrency } = useFormatters();

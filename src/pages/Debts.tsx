@@ -35,8 +35,8 @@ function Debts() {
   const [debtToDelete, setDebtToDelete] = useState<{ id: string; name: string } | null>(null);
 
   const { data: allDebts, isLoading: allLoading } = useDebts(currentPage, pageSize);
-  const { data: lendingDebts, isLoading: lendingLoading } = useLendingDebts(currentPage, pageSize);
-  const { data: borrowingDebts, isLoading: borrowingLoading } = useBorrowingDebts(currentPage, pageSize);
+  const { data: lendingDebts, isLoading: lendingLoading } = useLendingDebts(currentPage, pageSize, activeTab === 1);
+  const { data: borrowingDebts, isLoading: borrowingLoading } = useBorrowingDebts(currentPage, pageSize, activeTab === 2);
   const { data: summary } = useDebtSummary();
   const deleteDebt = useDeleteDebt();
   const { formatCurrency } = useFormatters();

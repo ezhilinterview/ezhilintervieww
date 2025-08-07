@@ -15,8 +15,6 @@ import {
   UpdatePaymentModeData,
   AccountSummary,
   DefaultPaymentMode
-} from '../types/account';
-
 // Get all accounts
 export const useAccounts = () => {
   return useQuery<Account[]>({

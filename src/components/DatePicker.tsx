@@ -64,7 +64,7 @@ export default function DatePicker({
       const month = String(newDate.getMonth() + 1).padStart(2, '0');
       const dayStr = String(newDate.getDate()).padStart(2, '0');
       onChange(`${year}-${month}-${dayStr}`);
-      setIsOpen(false);
+      // Don't close the picker, let user navigate if needed
     }
   };
 
@@ -204,6 +204,18 @@ export default function DatePicker({
 
           {/* Footer */}
           <div className="flex justify-end mt-3 sm:mt-4 pt-2 sm:pt-3 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={() => {
+                if (selectedDate) {
+                  setIsOpen(false);
+                }
+              }}
+              disabled={!selectedDate}
+              className="px-3 py-1 text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed mr-2"
+            >
+              Select
+            </button>
             <button
               type="button"
               onClick={() => setIsOpen(false)}

@@ -196,7 +196,7 @@ export const useDeleteDebt = () => {
 };
 
 // Debt Records hooks
-export const useDebtRecords = (debtId: string, page = 0, size = 10) => {
+export const useDebtRecords = (debtId: string, page = 0, size = 10, enabled = true) => {
   return useQuery<PaginatedDebtRecords>({
     queryKey: ['debt-records', debtId, page, size],
     queryFn: async () => {
@@ -211,7 +211,7 @@ export const useDebtRecords = (debtId: string, page = 0, size = 10) => {
         last: true
       };
     },
-    enabled: !!debtId,
+    enabled: !!debtId && enabled,
   });
 };
 
@@ -226,7 +226,7 @@ export const useDebtRecord = (id: string) => {
   });
 };
 
-export const usePaidRecords = (debtId: string, page = 0, size = 10) => {
+export const usePaidRecords = (debtId: string, page = 0, size = 10, enabled = true) => {
   return useQuery<PaginatedDebtRecords>({
     queryKey: ['debt-records', debtId, 'paid', page, size],
     queryFn: async () => {
@@ -241,11 +241,11 @@ export const usePaidRecords = (debtId: string, page = 0, size = 10) => {
         last: true
       };
     },
-    enabled: !!debtId,
+    enabled: !!debtId && enabled,
   });
 };
 
-export const useReceivedRecords = (debtId: string, page = 0, size = 10) => {
+export const useReceivedRecords = (debtId: string, page = 0, size = 10, enabled = true) => {
   return useQuery<PaginatedDebtRecords>({
     queryKey: ['debt-records', debtId, 'received', page, size],
     queryFn: async () => {
@@ -260,7 +260,7 @@ export const useReceivedRecords = (debtId: string, page = 0, size = 10) => {
         last: true
       };
     },
-    enabled: !!debtId,
+    enabled: !!debtId && enabled,
   });
 };
 
